@@ -6,8 +6,13 @@ var app = express();
 // Anything the Express app listens to, the server should also listen too.
 
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
+
+io.on('connection', function () {
+	console.log('User connected via socket.io!');
+});
 
 // Starts the server
 
