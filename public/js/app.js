@@ -7,6 +7,11 @@ socket.on('connect', function () {
 socket.on('message', function (message) {
 	console.log('New message: ');
 	console.log(message.text);
+
+	// Put . to select all elements who have that class name
+
+	jQuery('.messages').append('<p>' + message.text + '</p>');
+
 });
 
 // Handles submitting of new message. Put # to select an ID
@@ -28,5 +33,5 @@ $form.on('submit', function (event) {
 	// Delete the message in the input field
 
 	$message.val('');
-	
+
 });
