@@ -2,7 +2,7 @@ var PORT = process.env.PORT || 3000;
 var express = require('express');
 var app = express();
 
-// Tells Node to start a new server and to use the Express app as the boilerplace (standard).
+// Tells Node to start a new server and to use the Express app as the boilerplate (standard).
 // Anything the Express app listens to, the server should also listen too.
 
 var http = require('http').Server(app);
@@ -19,6 +19,7 @@ io.on('connection', function (socket) {
 		io.emit('message', message);
 
 		// Socket.broadcast emits the message to everybody expect the sender
+		
 		// socket.broadcast.emit('message', message);
 	})
 
