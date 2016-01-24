@@ -9,6 +9,7 @@ jQuery('.room-title').text(room);
 // This callback function get fires when the client sucessfully connects to the server
 socket.on('connect', function() {
 	console.log('Connected to socket.io server!');
+	
 	socket.emit('joinRoom', {
 		name: name,
 		room: room
