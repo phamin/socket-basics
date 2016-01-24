@@ -9,7 +9,7 @@ jQuery('.room-title').text(room);
 // This callback function get fires when the client sucessfully connects to the server
 socket.on('connect', function() {
 	console.log('Connected to socket.io server!');
-	
+
 	socket.emit('joinRoom', {
 		name: name,
 		room: room
@@ -28,7 +28,6 @@ socket.on('message', function(message) {
 
 	$message.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a') + '</strong></p>');
 	$message.append('<p>' + message.text + '</p>');
-
 });
 
 // Handles submitting of new message. Put # to select an ID
