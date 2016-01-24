@@ -11,16 +11,31 @@ var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
 
+var clientInfo = {};
+
 io.on('connection', function (socket) {
 	console.log('User connected via socket.io!');
+
+	// Socket.join adds a socket to a specific room. When I emit a joinRoom event from the client, in the server I get added to the room.
+	socket.on('joinRoom', function (req) {
+		clientInfo[socket.id] = req;
+		socket.join(req.room)
+		// Emits a message to everyone in the room that a new person joins. to() lets us specify the specific room to send the message to.
+		socket.broadcast.to(req.room).emit('message', {
+			name: 'System',
+			text: req.name + ' has joined!',
+			timestamp: moment().valueOf()
+		})
+	});
 
 	socket.on('message', function (message) {
 		console.log('Message received: ' + message.text);
 
 		message.timestamp = moment().valueOf();
-		io.emit('message', message);
+		// Only emits the message to people who are in the same room as the current user
+		io.to(clientInfo[socket.id].room).emit('message', message);
 
-		// Socket.broadcast emits the message to everybody expect the sender
+		// Socket.broadcast emits the message to everybody but the current socket (except the sender)
 		// socket.broadcast.emit('message', message);
 	})
 
