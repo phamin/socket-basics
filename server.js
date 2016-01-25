@@ -15,6 +15,14 @@ var clientInfo = {};
 
 // Sends current users to provided users
 
+function sendMessage(text) {
+	return {
+		name: 'System',
+		text: text,
+		timeStamp: moment().valueOf()
+	}
+}
+
 function sendCurrentUsers(socket) {
 	var info = clientInfo[socket.id];
 	var users = [];
@@ -23,6 +31,7 @@ function sendCurrentUsers(socket) {
 		return;
 	}
 
+	// Run through every item in clientInfo looking for people who are in the same room
 	Object.keys(clientInfo).forEach(function (socketId) {
 		var userInfo = clientInfo[socketId];
 		if (info.room === userInfo.room) {
@@ -30,11 +39,10 @@ function sendCurrentUsers(socket) {
 		}
 	})
 
-	socket.emit('message', {
-		name: 'System',
-		text: 'Current users: ' + users.join(', '),
-		timestamp: moment().valueOf()
-	})
+	var listOfNames = users.join(', ');
+
+	// Emit the list of names
+	socket.emit('message', sendMessage('Current users: ' + listOfNames));
 }
 
 io.on('connection', function(socket) {
@@ -47,11 +55,7 @@ io.on('connection', function(socket) {
 		if (typeof userData !== 'undefined') {
 			socket.leave(userData.room);
 
-			io.to(userData.room).emit('message', {
-				name: 'System',
-				text: userData.name + ' has left',
-				timestamp: moment().valueOf()
-			});
+			io.to(userData.room).emit('message', sendMessage(userData.name + ' has left'));
 
 			delete clientInfo[socket.id];
 		}
@@ -64,11 +68,7 @@ io.on('connection', function(socket) {
 		socket.join(req.room)
 
 		// Emits a message to everyone in the room that a new person joins. to() lets us specify the specific room to send the message to.
-		socket.broadcast.to(req.room).emit('message', {
-			name: 'System',
-			text: req.name + ' has joined!',
-			timestamp: moment().valueOf()
-		})
+		socket.broadcast.to(req.room).emit('message', sendMessage(req.name + ' has joined!'));
 	});
 
 	socket.on('message', function(message) {
@@ -87,11 +87,7 @@ io.on('connection', function(socket) {
 
 	// timestamp property - Javascript timestamp (milliseconds)
 
-	socket.emit('message', {
-		name: 'System',
-		text: 'Welcome to the chat application!',
-		timestamp: moment().valueOf()
-	});
+	socket.emit('message', sendMessage('Welcome to the chat application!'));
 });
 
 // Starts the server
