@@ -15,7 +15,7 @@ var clientInfo = {};
 
 // Sends current users to provided users
 
-function sendMessage(text) {
+function addChatMessage(text) {
 	return {
 		name: 'System',
 		text: text,
@@ -42,7 +42,7 @@ function sendCurrentUsers(socket) {
 	var listOfNames = users.join(', ');
 
 	// Emit the list of names
-	socket.emit('message', sendMessage('Current users: ' + listOfNames));
+	socket.emit('message', addChatMessage('Current users: ' + listOfNames));
 }
 
 io.on('connection', function(socket) {
@@ -55,7 +55,7 @@ io.on('connection', function(socket) {
 		if (typeof userData !== 'undefined') {
 			socket.leave(userData.room);
 
-			io.to(userData.room).emit('message', sendMessage(userData.name + ' has left'));
+			io.to(userData.room).emit('message', addChatMessage(userData.name + ' has left'));
 
 			delete clientInfo[socket.id];
 		}
@@ -68,7 +68,7 @@ io.on('connection', function(socket) {
 		socket.join(req.room)
 
 		// Emits a message to everyone in the room that a new person joins. to() lets us specify the specific room to send the message to.
-		socket.broadcast.to(req.room).emit('message', sendMessage(req.name + ' has joined!'));
+		socket.broadcast.to(req.room).emit('message', addChatMessage(req.name + ' has joined!'));
 	});
 
 	socket.on('message', function(message) {
@@ -87,7 +87,7 @@ io.on('connection', function(socket) {
 
 	// timestamp property - Javascript timestamp (milliseconds)
 
-	socket.emit('message', sendMessage('Welcome to the chat application!'));
+	socket.emit('message', addChatMessage('Welcome to the chat application!'));
 });
 
 // Starts the server
