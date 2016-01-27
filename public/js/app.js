@@ -16,18 +16,23 @@ socket.on('connect', function() {
 	});
 });
 
-socket.on('message', function(message) {
+socket.on('message', function (message) {
 	var momentTimestamp = moment.utc(message.timestamp);
 
-
 	// Put . to select all elements who have that class name
-	var $message = jQuery('.messages');
+	var $messages = jQuery('.messages');
+	// Create an element with jQuery
+	var $message = jQuery('<li class="list-group-item"></li>');
 
 	console.log('New message: ');
 	console.log(message.text);
 
+	// Add two paragraphs to that elements ($message) 
 	$message.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a') + '</strong></p>');
 	$message.append('<p>' + message.text + '</p>');
+
+	// Append this new element to website making it visible to the user's browser 
+	$messages.append($message);
 });
 
 // Handles submitting of new message. Put # to select an ID
